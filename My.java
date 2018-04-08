@@ -7,40 +7,40 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.io.*;
 /**
- * Created by Даниил on 03.07.2016.
+ * Created by Daniil on 03.07.2016.
  */
 /*
-%%%%% Первичная задача:
+%%%%% РџРµСЂРІРёС‡РЅР°СЏ Р·Р°РґР°С‡Р°:
 
-Взять все слова в массив
-Бегать по этому массиву и считывать всё.
-Метрака: 1/|а-q|
-Очки:
-Если слово из ответа и вопроса рядом, то больше очков
-Если в пределах плюс-минус 5 позиций встречается bad word, то очки пропорционально снимаются(та же метрика)
-Улучшение -- если рядом с одним словом из ответа много слов вопроса, то коэффициент надо ввести.(скажем, 1 слово -- l=1, 2 слова -- k=1.5, 3 слова -- 2.)
+Р’Р·СЏС‚СЊ РІСЃРµ СЃР»РѕРІР° РІ РјР°СЃСЃРёРІ
+Р‘РµРіР°С‚СЊ РїРѕ СЌС‚РѕРјСѓ РјР°СЃСЃРёРІСѓ Рё СЃС‡РёС‚С‹РІР°С‚СЊ РІСЃС‘.
+РњРµС‚СЂРёРєР°: 1/|Р°-q|
+РћС‡РєРё:
+Р•СЃР»Рё СЃР»РѕРІРѕ РёР· РѕС‚РІРµС‚Р° Рё РІРѕРїСЂРѕСЃР° СЂСЏРґРѕРј, С‚Рѕ Р±РѕР»СЊС€Рµ РѕС‡РєРѕРІ
+Р•СЃР»Рё РІ РїСЂРµРґРµР»Р°С… РїР»СЋСЃ-РјРёРЅСѓСЃ 5 РїРѕР·РёС†РёР№ РІСЃС‚СЂРµС‡Р°РµС‚СЃСЏ bad word, С‚Рѕ РѕС‡РєРё РїСЂРѕРїРѕСЂС†РёРѕРЅР°Р»СЊРЅРѕ СЃРЅРёРјР°СЋС‚СЃСЏ(С‚Р° Р¶Рµ РјРµС‚СЂРёРєР°)
+РЈР»СѓС‡С€РµРЅРёРµ -- РµСЃР»Рё СЂСЏРґРѕРј СЃ РѕРґРЅРёРј СЃР»РѕРІРѕРј РёР· РѕС‚РІРµС‚Р° РјРЅРѕРіРѕ СЃР»РѕРІ РІРѕРїСЂРѕСЃР°, С‚Рѕ РєРѕСЌС„С„РёС†РёРµРЅС‚ РЅР°РґРѕ РІРІРµСЃС‚Рё.(СЃРєР°Р¶РµРј, 1 СЃР»РѕРІРѕ -- l=1, 2 СЃР»РѕРІР° -- k=1.5, 3 СЃР»РѕРІР° -- 2.)
 
-пробегаем текст -- если ответ, тогда пробегаем текст и считаем очки.
-Следующее улучшение: разбиенеие на предложения и накидывание коэффициентов в зависимости от количества предложений между словами.
-Задача сейчас -- разобраться с метрикой и начислением баллов. Учитывать bad words только в пределах предложения слова.
+РїСЂРѕР±РµРіР°РµРј С‚РµРєСЃС‚ -- РµСЃР»Рё РѕС‚РІРµС‚, С‚РѕРіРґР° РїСЂРѕР±РµРіР°РµРј С‚РµРєСЃС‚ Рё СЃС‡РёС‚Р°РµРј РѕС‡РєРё.
+РЎР»РµРґСѓСЋС‰РµРµ СѓР»СѓС‡С€РµРЅРёРµ: СЂР°Р·Р±РёРµРЅРµРёРµ РЅР° РїСЂРµРґР»РѕР¶РµРЅРёСЏ Рё РЅР°РєРёРґС‹РІР°РЅРёРµ РєРѕСЌС„С„РёС†РёРµРЅС‚РѕРІ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РєРѕР»РёС‡РµСЃС‚РІР° РїСЂРµРґР»РѕР¶РµРЅРёР№ РјРµР¶РґСѓ СЃР»РѕРІР°РјРё.
+Р—Р°РґР°С‡Р° СЃРµР№С‡Р°СЃ -- СЂР°Р·РѕР±СЂР°С‚СЊСЃСЏ СЃ РјРµС‚СЂРёРєРѕР№ Рё РЅР°С‡РёСЃР»РµРЅРёРµРј Р±Р°Р»Р»РѕРІ. РЈС‡РёС‚С‹РІР°С‚СЊ bad words С‚РѕР»СЊРєРѕ РІ РїСЂРµРґРµР»Р°С… РїСЂРµРґР»РѕР¶РµРЅРёСЏ СЃР»РѕРІР°.
 
-%%%%% Основная задача:
+%%%%% РћСЃРЅРѕРІРЅР°СЏ Р·Р°РґР°С‡Р°:
 
-Нейросеть решит, какой из вариантов ответа верный.
-На вход нейрону будет подаваться 1/расстояние между словами.
-Весы нейросети будут сгенерированы случайным образом
-Дальше алгоритм обратной связи будет работать, пока программа не даст верного ответа
+РќРµР№СЂРѕСЃРµС‚СЊ СЂРµС€РёС‚, РєР°РєРѕР№ РёР· РІР°СЂРёР°РЅС‚РѕРІ РѕС‚РІРµС‚Р° РІРµСЂРЅС‹Р№.
+РќР° РІС…РѕРґ РЅРµР№СЂРѕРЅСѓ Р±СѓРґРµС‚ РїРѕРґР°РІР°С‚СЊСЃСЏ 1/СЂР°СЃСЃС‚РѕСЏРЅРёРµ РјРµР¶РґСѓ СЃР»РѕРІР°РјРё.
+Р’РµСЃС‹ РЅРµР№СЂРѕСЃРµС‚Рё Р±СѓРґСѓС‚ СЃРіРµРЅРµСЂРёСЂРѕРІР°РЅС‹ СЃР»СѓС‡Р°Р№РЅС‹Рј РѕР±СЂР°Р·РѕРј
+Р”Р°Р»СЊС€Рµ Р°Р»РіРѕСЂРёС‚Рј РѕР±СЂР°С‚РЅРѕР№ СЃРІСЏР·Рё Р±СѓРґРµС‚ СЂР°Р±РѕС‚Р°С‚СЊ, РїРѕРєР° РїСЂРѕРіСЂР°РјРјР° РЅРµ РґР°СЃС‚ РІРµСЂРЅРѕРіРѕ РѕС‚РІРµС‚Р°
 
 */
 
 public class My {
 
 
-//метод обрабатывает исходный текст
+//РјРµС‚РѕРґ РѕР±СЂР°Р±Р°С‚С‹РІР°РµС‚ РёСЃС…РѕРґРЅС‹Р№ С‚РµРєСЃС‚
 public static ArrayList<String> TextAdaptation(int n) {
     ArrayList<String> Text = new ArrayList<String>();
     try {
-        File MyFile = new File("C:\\Users\\Даниил\\IdeaProjects\\Answer_Question\\src\\Sourse.txt");
+        File MyFile = new File("C:\\Users\\Г„Г Г­ГЁГЁГ«\\IdeaProjects\\Answer_Question\\src\\Sourse.txt");
         FileReader fileReader = new FileReader(MyFile);
 
         BufferedReader reader = new BufferedReader(fileReader);
@@ -54,16 +54,16 @@ public static ArrayList<String> TextAdaptation(int n) {
             }
             else if (text_number == n) {
                 do {
-                    line = line.replaceAll("…", "").replaceAll("—", "").replaceAll(",", "").replaceAll("-", "").replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\;", "").replaceAll("\\:", "").replaceAll("\\»", "").replaceAll("\\«", "").replaceAll("»", "").replaceAll("«", "");
+                    line = line.replaceAll("вЂ¦", "").replaceAll("вЂ”", "").replaceAll(",", "").replaceAll("-", "").replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\;", "").replaceAll("\\:", "").replaceAll("\\В»", "").replaceAll("\\В«", "").replaceAll("В»", "").replaceAll("В«", "");
                     String[] string = line.split(" ");
 
                     for (int y = 0; y < string.length; y++) {
-                        //System.out.println(string[y]); Соотвествие распознанного слова его длине
+                        //System.out.println(string[y]); РЎРѕРѕС‚РІРµСЃС‚РІРёРµ СЂР°СЃРїРѕР·РЅР°РЅРЅРѕРіРѕ СЃР»РѕРІР° РµРіРѕ РґР»РёРЅРµ
                         if (string[y].length() > 1) {
                             char[] chars = string[y].toCharArray();
 
                             int ind = string[y].length() - 1;
-                            //System.out.println(chars.length); Длина распознанного слова
+                            //System.out.println(chars.length);  Р”Р»РёРЅР° СЂР°СЃРїРѕР·РЅР°РЅРЅРѕРіРѕ СЃР»РѕРІР°
                             if (chars[ind] == '.' || chars[ind] == '?' || chars[ind] == '!' || (chars[ind] == '.' && chars[ind - 1] == '.' && chars[ind - 2] == '.')) {
                                 string[y] = string[y].replace(".", "").replace("?", "").replace("!", "").replace("...", "");
                                 Text.add(string[y]);
@@ -86,7 +86,7 @@ public static ArrayList<String> TextAdaptation(int n) {
         ex.printStackTrace();
     }
 
-    //Отладка правильности распознования текста
+   //РћС‚Р»Р°РґРєР° РїСЂР°РІРёР»СЊРЅРѕСЃС‚Рё СЂР°СЃРїРѕР·РЅРѕРІР°РЅРёСЏ С‚РµРєСЃС‚Р°
     //for(int yo = 0; yo<Text.size(); yo++) System.out.println(Text.get(yo));
     return Text;
 }
@@ -98,7 +98,7 @@ public static ArrayList<String> TextAdaptation(int n) {
     public static ArrayList<String> QuestionAdaptation (int n) {
         ArrayList<String> Question = new ArrayList<String>();
         try {
-            File MyFile = new File("C:\\Users\\Даниил\\IdeaProjects\\Answer_Question\\src\\Question.txt");
+            File MyFile = new File("C:\Users\IdeaProjects\Answer_Question\src\Question.txt");
             FileReader fileReader = new FileReader(MyFile);
 
             BufferedReader reader = new BufferedReader(fileReader);
@@ -113,15 +113,11 @@ public static ArrayList<String> TextAdaptation(int n) {
 
                 }
                 else if (text_number == n) {
-
-                    //line = reader.readLine();
-                    // System.out.println("сас");
-                    //System.out.println(line);
-                    line = line.replaceAll("\\?", "").replaceAll(",", "").replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\.", "").replaceAll("\\;", "").replaceAll("\\:", "").replaceAll("\\»", "").replaceAll("\\«", "");
+                    line = line.replaceAll("\\?", "").replaceAll(",", "").replaceAll("\\[", "").replaceAll("\\]", "").replaceAll("\\.", "").replaceAll("\\;", "").replaceAll("\\:", "").replaceAll("\\В»", "").replaceAll("\\В«", "");
                     String[] string = line.split(" ");
                     for (int y = 0; y < string.length; y++) {
-                        if (!string[y].equalsIgnoreCase("куда") && !string[y].equalsIgnoreCase("какие") && !string[y].equalsIgnoreCase("каких") && !string[y].equalsIgnoreCase("какую") && !string[y].equalsIgnoreCase("какого") && !string[y].equalsIgnoreCase("какой") && !string[y].equalsIgnoreCase("в") && !string[y].equalsIgnoreCase("на") && !string[y].equalsIgnoreCase("за") && !string[y].equalsIgnoreCase("а") && !string[y].equalsIgnoreCase("о") && !string[y].equalsIgnoreCase("у") && !string[y].equalsIgnoreCase("к") && !string[y].equalsIgnoreCase("и") && !string[y].equalsIgnoreCase("с") && !string[y].equalsIgnoreCase("кем") && !string[y].equalsIgnoreCase("чем") && !string[y].equalsIgnoreCase("чём") && !string[y].equalsIgnoreCase("кого") && !string[y].equalsIgnoreCase("чего") && !string[y].equalsIgnoreCase("чему") && !string[y].equalsIgnoreCase("чему") && !string[y].equalsIgnoreCase("чей") && !string[y].equalsIgnoreCase("кто") && !string[y].equalsIgnoreCase("что") && !string[y].equalsIgnoreCase("ком")) {
-                            if (string[y].equalsIgnoreCase("не") || string[y].equalsIgnoreCase("нет")) { //если в вопросе было отрицание, то тогда при выборе ответа будет выбираться не с максимальным баллом, а с минимальным
+                        if (!string[y].equalsIgnoreCase("РєСѓРґР°") && !string[y].equalsIgnoreCase("РєР°РєРёРµ") && !string[y].equalsIgnoreCase("РєР°РєРёС…") && !string[y].equalsIgnoreCase("РєР°РєСѓСЋ") && !string[y].equalsIgnoreCase("РєР°РєРѕРіРѕ") && !string[y].equalsIgnoreCase("РєР°РєРѕР№") && !string[y].equalsIgnoreCase("РІ") && !string[y].equalsIgnoreCase("РЅР°") && !string[y].equalsIgnoreCase("Р·Р°") && !string[y].equalsIgnoreCase("Р°") && !string[y].equalsIgnoreCase("Рѕ") && !string[y].equalsIgnoreCase("Сѓ") && !string[y].equalsIgnoreCase("Рє") && !string[y].equalsIgnoreCase("Рё") && !string[y].equalsIgnoreCase("СЃ") && !string[y].equalsIgnoreCase("РєРµРј") && !string[y].equalsIgnoreCase("С‡РµРј") && !string[y].equalsIgnoreCase("С‡С‘Рј") && !string[y].equalsIgnoreCase("РєРѕРіРѕ") && !string[y].equalsIgnoreCase("С‡РµРіРѕ") && !string[y].equalsIgnoreCase("С‡РµРјСѓ") && !string[y].equalsIgnoreCase("С‡РµРјСѓ") && !string[y].equalsIgnoreCase("С‡РµР№") && !string[y].equalsIgnoreCase("РєС‚Рѕ") && !string[y].equalsIgnoreCase("С‡С‚Рѕ") && !string[y].equalsIgnoreCase("РєРѕРј")) {
+                            if (string[y].equalsIgnoreCase("РЅРµ") || string[y].equalsIgnoreCase("РЅРµС‚")) { //РµСЃР»Рё РІ РІРѕРїСЂРѕСЃРµ Р±С‹Р»Рѕ РѕС‚СЂРёС†Р°РЅРёРµ, С‚Рѕ С‚РѕРіРґР° РїСЂРё РІС‹Р±РѕСЂРµ РѕС‚РІРµС‚Р° Р±СѓРґРµС‚ РІС‹Р±РёСЂР°С‚СЊСЃСЏ РЅРµ СЃ РјР°РєСЃРёРјР°Р»СЊРЅС‹Рј Р±Р°Р»Р»РѕРј, Р° СЃ РјРёРЅРёРјР°Р»СЊРЅС‹Рј
                                 isNEGATIVE = 1;
                             }
                             Question.add(string[y]);
@@ -130,7 +126,7 @@ public static ArrayList<String> TextAdaptation(int n) {
                     }
                     break;
 
-                    //Оталдка правильности распознования вопроса
+                    //РћС‚Р°Р»РґРєР° РїСЂР°РІРёР»СЊРЅРѕСЃС‚Рё СЂР°СЃРїРѕР·РЅРѕРІР°РЅРёСЏ РІРѕРїСЂРѕСЃР°
                     //for(int ys = 0; ys<Question.size(); ys++) System.out.println(Question.get(ys));
                 }
                 if(text_number > n) break;
@@ -145,12 +141,12 @@ public static ArrayList<String> TextAdaptation(int n) {
     }
 
 
-   static ArrayList<String> ANSWERS;     //Массив слов вариантов ответа.
+   static ArrayList<String> ANSWERS;     //РњР°СЃСЃРёРІ СЃР»РѕРІ РІР°СЂРёР°РЅС‚РѕРІ РѕС‚РІРµС‚Р°.
 
     public static ArrayList<String> AnswerAdaptation (){
         ArrayList<String> Buffer = new ArrayList<String>();
         try {
-            File MyFile = new File("C:\\Users\\Даниил\\IdeaProjects\\Answer_Question\\src\\Answer.txt");
+            File MyFile = new File("C:\Users\IdeaProjects\Answer_Question\src\Answer.txt");
             FileReader fileReader = new FileReader(MyFile);
 
             BufferedReader reader = new BufferedReader(fileReader);
@@ -169,115 +165,7 @@ public static ArrayList<String> TextAdaptation(int n) {
 
         return Buffer;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-        System.out.print("Варианты ответа: ");
-
-        for (int u = 0; u<4; u++){
-            String s = sc.next();
-            Answer[u] = s;
-            Points[u] = 0;
-        }
-
-        Bad_words[0]="не";
-        Bad_words[1]="нет";
-
-        for (int i = 0; i < 4; i++) {//Главный цикл для вариантов ответа
-
-            for (int j = 0; j < Text.size(); j++){//ищем слова ответа
-                if (Text.get(j).compareToIgnoreCase(Answer[i]) == 0){//если нашли слово ответа, то переходим к поиску слов вопроса или bad words и начислению очков в соответствии с точками.
-
-                    int o = j;
-                    int a = j;
-
-                    //поиск Bad_words слева и справа от слова ответа в пределах того же предложения
-                    while (!Text.get(o).equals(".") && o>=0){
-                        if (Text.get(o).compareToIgnoreCase(Bad_words[0]) == 0 || Text.get(o).compareToIgnoreCase(Bad_words[1]) == 0) Points[i] = Points[i] - (double)8/Math.abs(j - o);
-                        if (o>0) o = o-1;
-                        else break;
-                    }
-                    o = j;
-                    while (!Text.get(a).equals(".")){
-                        if (Text.get(a).compareToIgnoreCase(Bad_words[0]) == 0 || Text.get(a).compareToIgnoreCase(Bad_words[1]) == 0) Points[i] = Points[i] - (double)8/Math.abs(j - a);
-                        a = a+1;
-                    }
-
-
-                    a = j;
-
-                    //Поиск слов вопроса слева и справа от слова ответа с учётом точек
-                    while (o >= 0){
-                        for(int qq = 0; qq < Question.size(); qq++) {
-                            if (Text.get(o).compareToIgnoreCase(Question.get(qq)) == 0){
-                                Points[i] = Points[i] + (double)k/Math.abs(j-o);
-                                //Проверка на корректность обработки текста в поисках ответа на вопрос
-                                //System.out.println("Я нашёлся с таким ответом к такому вопросу и вот мои балыы");
-                                //System.out.println(Text.get(j));
-
-                                //System.out.println(Answer[i]);
-                                //System.out.println(Points[i]);
-                            }
-                            if (k != 1 && !Text.get(o).equals(".")) k = k - 2;
-                        }
-                        o = o-1;
-                    }
-                    k = 7;
-                    while (a < Text.size()){
-                        for(int qq = 0; qq < Question.size(); qq++) {
-                            if (a != Text.size() && Text.get(a).compareToIgnoreCase(Question.get(qq)) == 0){
-                                Points[i] = Points[i] + (double)k/Math.abs(j-a);
-                                //Проверка на корректность обработки текста в поисках ответа на вопрос
-                                //System.out.println("Я нашёлся с таким ответом к такому вопросу и вот мои балыы");
-                                //System.out.println(Text.get(j));
-
-                                //System.out.println(Answer[i]);
-                                //System.out.println(Points[i]);
-                            }
-                            if (k != 1 && !Text.get(a).equals(".")) k = k - 2;
-                        }
-                        a = a+1;
-                    }
-                    k = 7;
-                }
-            }
-        }
-
-        System.out.print("Весы нейросети: ");
-
-        double max = 0.0;
-        e = 0;
-
-        for (int i = 0; i<4; i++) {
-            System.out.print(Points[i] + ", ");
-            if (Points[i]>max){
-                e=i;
-                max=Points[i];
-            }
-        }
-
-        System.out.println();
-        System.out.print("Ответ: " + Answer[e]);
-
-        System.out.println();
-
-
-    }
-    */
-
+    
 static final int INPUT_NEURONS = 10;
 static final int HIDDEN_NEURONS_1 = 11;
 static final int HIDDEN_NEURONS_2 = 5;
@@ -302,32 +190,32 @@ static final double LEARN_RATE = 0.001;
     }
 
 
-    //активаторы
+    //Р°РєС‚РёРІР°С‚РѕСЂС‹
     static double[] target = new double[OUTPUT_NEURONS];
     static double[] actual = new double[OUTPUT_NEURONS];
     static double[] inputs = new double[INPUT_NEURONS];
     static double[] hidden_1 = new double[HIDDEN_NEURONS_1];
     static double[] hidden_2 = new double[HIDDEN_NEURONS_2];
 
-    //ошибки
+    //РѕС€РёР±РєРё
     static double[] erro = new double[OUTPUT_NEURONS];
     static double[] errh_1 = new double[HIDDEN_NEURONS_1];
     static double[] errh_2 = new double[HIDDEN_NEURONS_2];
 
-    //вход скрытых ячеек первого слоя + смещеие
+    //РІС…РѕРґ СЃРєСЂС‹С‚С‹С… СЏС‡РµРµРє РїРµСЂРІРѕРіРѕ СЃР»РѕСЏ + СЃРјРµС‰РµРёРµ
     static double[][] wih_1 = new double[INPUT_NEURONS+1][HIDDEN_NEURONS_1];
-    //вход во второй скрытый слой + смещение
+    //РІС…РѕРґ РІРѕ РІС‚РѕСЂРѕР№ СЃРєСЂС‹С‚С‹Р№ СЃР»РѕР№ + СЃРјРµС‰РµРЅРёРµ
     static double[][] wih_2 = new double[HIDDEN_NEURONS_1+1][HIDDEN_NEURONS_2];
-    //вход выходных ячеек + смещение
+    //РІС…РѕРґ РІС‹С…РѕРґРЅС‹С… СЏС‡РµРµРє + СЃРјРµС‰РµРЅРёРµ
     static double[][] who = new double[HIDDEN_NEURONS_2+1][OUTPUT_NEURONS];
 
 
-    //функция сигмоид
+    //С„СѓРЅРєС†РёСЏ СЃРёРіРјРѕРёРґ
     public static double sigmoid(double val){
         return (1.0 / (1.0 + Math.exp(-val)));
     }
 
-    //нормализующая функция
+    //РЅРѕСЂРјР°Р»РёР·СѓСЋС‰Р°СЏ С„СѓРЅРєС†РёСЏ
     public static double sigmoidDerivative(double val) {
         return (val * (1.0 - val));
     }
@@ -336,18 +224,18 @@ static final double LEARN_RATE = 0.001;
 
 
 
-//обучающий набор -- состоит из десяти чисел. Число наборов равно числу текстов на число вопросов на число ответов.
-    //static final int ANSWER = 4; //Число ответов
-    static final int TEXTS = 1; //Число текстов
-    static final int QUESTION = 1; //Число вопросов по каждому тексту
-    static double[][] Samples = new double[TEXTS*QUESTION*OUTPUT_NEURONS][INPUT_NEURONS+OUTPUT_NEURONS];  //число текстов умножено на число вопросов
+//РѕР±СѓС‡Р°СЋС‰РёР№ РЅР°Р±РѕСЂ -- СЃРѕСЃС‚РѕРёС‚ РёР· РґРµСЃСЏС‚Рё С‡РёСЃРµР». Р§РёСЃР»Рѕ РЅР°Р±РѕСЂРѕРІ СЂР°РІРЅРѕ С‡РёСЃР»Сѓ С‚РµРєСЃС‚РѕРІ РЅР° С‡РёСЃР»Рѕ РІРѕРїСЂРѕСЃРѕРІ РЅР° С‡РёСЃР»Рѕ РѕС‚РІРµС‚РѕРІ.
+    static final int ANSWER = 4; //Р§РёСЃР»Рѕ РІР°СЂР°РЅС‚РѕРІ РѕС‚РІРµС‚РѕРІ РЅР° РєР°Р¶РґС‹Р№ РІРѕРїСЂРѕСЃ
+    static final int TEXTS = 4; //Р§РёСЃР»Рѕ С‚РµРєСЃС‚РѕРІ
+    static final int QUESTION = 2; //Р§РёСЃР»Рѕ РІРѕРїСЂРѕСЃРѕРІ РїРѕ РєР°Р¶РґРѕРјСѓ С‚РµРєСЃС‚Сѓ
+    static double[][] Samples = new double[TEXTS*QUESTION*OUTPUT_NEURONS][INPUT_NEURONS+OUTPUT_NEURONS];  //С‡РёСЃР»Рѕ С‚РµРєСЃС‚РѕРІ СѓРјРЅРѕР¶РµРЅРѕ РЅР° С‡РёСЃР»Рѕ РІРѕРїСЂРѕСЃРѕРІ
 
 
-//Список плохих слов
-    static final String Bad_words[] = {"Нет", "Не"};
+//РЎРїРёСЃРѕРє РїР»РѕС…РёС… СЃР»РѕРІ
+    static final String Bad_words[] = {"РќРµС‚", "РќРµ"};
 
 
-/*           ~~~~СОЗДАНИЕ ОБУЧАЮЩИХ НАБОРОВ~~~~              */
+/*           ~~~~РЎРћР—Р”РђРќРР• РћР‘РЈР§РђР®Р©РРҐ РќРђР‘РћР РћР’~~~~              */
 
 static int[][] TARGET = {{0, 1, 0, 0},
         {0, 1, 0, 0},
@@ -412,19 +300,19 @@ static int[][] TARGET = {{0, 1, 0, 0},
 
     public static double[][] AssignSamples(double[][] Samples){
 
-        ANSWERS = AnswerAdaptation(); //заполнили массив вариантов ответа, чтобы потом со всем сравнивать.
+        ANSWERS = AnswerAdaptation(); //Р·Р°РїРѕР»РЅРёР»Рё РјР°СЃСЃРёРІ РІР°СЂРёР°РЅС‚РѕРІ РѕС‚РІРµС‚Р°, С‡С‚РѕР±С‹ РїРѕС‚РѕРј СЃРѕ РІСЃРµРј СЃСЂР°РІРЅРёРІР°С‚СЊ.
         //int Nanswer = 0;
 
-        for(int sample_counter = 0; sample_counter < TEXTS; sample_counter++) {       //заполняем один обучающий набор
+        for(int sample_counter = 0; sample_counter < TEXTS; sample_counter++) {       //Р·Р°РїРѕР»РЅСЏРµРј РѕРґРёРЅ РѕР±СѓС‡Р°СЋС‰РёР№ РЅР°Р±РѕСЂ
 
-            ArrayList<String> Text = new ArrayList<String>();  //для нового набора -- новый текст
+            ArrayList<String> Text = new ArrayList<String>();  //РґР»СЏ РЅРѕРІРѕРіРѕ РЅР°Р±РѕСЂР° -- РЅРѕРІС‹Р№ С‚РµРєСЃС‚
             Text = TextAdaptation(sample_counter);
             for(int yo = 0; yo<Text.size(); yo++) System.out.print(Text.get(yo) + " ");
             System.out.println();
 
-            for(int answer_counter=0; answer_counter<QUESTION; answer_counter++) { //на каждый текст три вопроса.
+            for(int answer_counter=0; answer_counter<QUESTION; answer_counter++) { //РЅР° РєР°Р¶РґС‹Р№ С‚РµРєСЃС‚ С‚СЂРё РІРѕРїСЂРѕСЃР°.
 
-                ArrayList<String> Question = new ArrayList<String>();       //обрабатывается вопрос
+                ArrayList<String> Question = new ArrayList<String>();       //РѕР±СЂР°Р±Р°С‚С‹РІР°РµС‚СЃСЏ РІРѕРїСЂРѕСЃ
                 Question = QuestionAdaptation(sample_counter*QUESTION + answer_counter);
                 for(int yo = 0; yo<Question.size(); yo++) System.out.print(Question.get(yo) + " ");
                 System.out.println();
@@ -432,31 +320,31 @@ static int[][] TARGET = {{0, 1, 0, 0},
                 for(int ans = 0; ans<OUTPUT_NEURONS; ans++) {
 
                     String Answer = ANSWERS.get((OUTPUT_NEURONS*QUESTION)*sample_counter + OUTPUT_NEURONS*answer_counter + ans);
-                    //После того, как считали текст, вопрос и слово ответа, заполняем ячейки обучающего набора (ТОЛЬКО ВХОДНЫЕ ДАННЫЕ. ПОСЛЕДНИЕ 4 ЯЧЕЙКИ ОТВЕЧАЮТ ЗА TARGET
+                   //РџРѕСЃР»Рµ С‚РѕРіРѕ, РєР°Рє СЃС‡РёС‚Р°Р»Рё С‚РµРєСЃС‚, РІРѕРїСЂРѕСЃ Рё СЃР»РѕРІРѕ РѕС‚РІРµС‚Р°, Р·Р°РїРѕР»РЅСЏРµРј СЏС‡РµР№РєРё РѕР±СѓС‡Р°СЋС‰РµРіРѕ РЅР°Р±РѕСЂР° (РўРћР›Р¬РљРћ Р’РҐРћР”РќР«Р• Р”РђРќРќР«Р•. РџРћРЎР›Р•Р”РќРР• 4 РЇР§Р•Р™РљР РћРўР’Р•Р§РђР®Рў Р—Рђ TARGET
                     System.out.println(Answer);
                     System.out.println();
-                    //пробегаем по словам ответа и ищем слова вопроса
+                    //РїСЂРѕР±РµРіР°РµРј РїРѕ СЃР»РѕРІР°Рј РѕС‚РІРµС‚Р° Рё РёС‰РµРј СЃР»РѕРІР° РІРѕРїСЂРѕСЃР°
 
                     for (int word = 0; word < Text.size(); word++) {
-                        if (Text.get(word).compareToIgnoreCase(Answer) == 0) {//если нашли слово ответа, то переходим к поиску слов вопроса или bad words и начислению очков в соответствии с точками.
+                        if (Text.get(word).compareToIgnoreCase(Answer) == 0) {//РµСЃР»Рё РЅР°С€Р»Рё СЃР»РѕРІРѕ РѕС‚РІРµС‚Р°, С‚Рѕ РїРµСЂРµС…РѕРґРёРј Рє РїРѕРёСЃРєСѓ СЃР»РѕРІ РІРѕРїСЂРѕСЃР° РёР»Рё bad words Рё РЅР°С‡РёСЃР»РµРЅРёСЋ РѕС‡РєРѕРІ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ С‚РѕС‡РєР°РјРё.
 
 
-                            int new_counter = word - 1; //новый счётчик для поиска слов вопроса. Слово ответа игнорируется
+                            int new_counter = word - 1; //РЅРѕРІС‹Р№ СЃС‡С‘С‚С‡РёРє РґР»СЏ РїРѕРёСЃРєР° СЃР»РѕРІ РІРѕРїСЂРѕСЃР°. РЎР»РѕРІРѕ РѕС‚РІРµС‚Р° РёРіРЅРѕСЂРёСЂСѓРµС‚СЃСЏ
                             //int dot_counter = 0;
                             int input_index = 4;
 
-                            while (input_index >= 0 && new_counter >= 0) {   //ищем слова вопроса слева от слова ответа в пределах четырёх предложений
+                            while (input_index >= 0 && new_counter >= 0) {   //РёС‰РµРј СЃР»РѕРІР° РІРѕРїСЂРѕСЃР° СЃР»РµРІР° РѕС‚ СЃР»РѕРІР° РѕС‚РІРµС‚Р° РІ РїСЂРµРґРµР»Р°С… С‡РµС‚С‹СЂС‘С… РїСЂРµРґР»РѕР¶РµРЅРёР№
 
                                 if (input_index == 4 && (Text.get(new_counter).compareToIgnoreCase(Bad_words[0]) == 0 || Text.get(new_counter).compareToIgnoreCase(Bad_words[1]) == 0)) {
-                                    Samples[(OUTPUT_NEURONS*QUESTION)*sample_counter + OUTPUT_NEURONS*answer_counter + ans][INPUT_NEURONS - 1] += (double)(1.0 / (Math.abs(word - new_counter)));     //Если в предложении, где нашлось слово ответа есть плохие слова, то они учитываются.
+                                    Samples[(OUTPUT_NEURONS*QUESTION)*sample_counter + OUTPUT_NEURONS*answer_counter + ans][INPUT_NEURONS - 1] += (double)(1.0 / (Math.abs(word - new_counter)));      //Р•СЃР»Рё РІ РїСЂРµРґР»РѕР¶РµРЅРёРё, РіРґРµ РЅР°С€Р»РѕСЃСЊ СЃР»РѕРІРѕ РѕС‚РІРµС‚Р° РµСЃС‚СЊ РїР»РѕС…РёРµ СЃР»РѕРІР°, С‚Рѕ РѕРЅРё СѓС‡РёС‚С‹РІР°СЋС‚СЃСЏ.
                                 }
 
-                                if (Text.get(new_counter).equals(".")) {    //При переходе к новому предложению расстояния записываются в другую ячейку входа
+                                if (Text.get(new_counter).equals(".")) {     //РџСЂРё РїРµСЂРµС…РѕРґРµ Рє РЅРѕРІРѕРјСѓ РїСЂРµРґР»РѕР¶РµРЅРёСЋ СЂР°СЃСЃС‚РѕСЏРЅРёСЏ Р·Р°РїРёСЃС‹РІР°СЋС‚СЃСЏ РІ РґСЂСѓРіСѓСЋ СЏС‡РµР№РєСѓ РІС…РѕРґР°
                                     input_index--;
-                                } else {                                   //В пределах предложения ищем слова из вопроса
+                                } else {                                   //Р’ РїСЂРµРґРµР»Р°С… РїСЂРµРґР»РѕР¶РµРЅРёСЏ РёС‰РµРј СЃР»РѕРІР° РёР· РІРѕРїСЂРѕСЃР°
                                     for (int question_counter = 0; question_counter < Question.size(); question_counter++) {
-                                        if (Text.get(new_counter).compareToIgnoreCase(Question.get(question_counter)) == 0) { //если нашлось слово вопроса, то ячейке приплюсовывается расстояние между словом вопроса и ответа
-                                            //System.out.println("Я нашёл слово ответа: " + Question.get(question_counter) + " в " + sample_counter + "м тексте, рядом со вариантом ответа" + Answer + "на расстоянии " + 1.0 / (Math.abs(word - new_counter)));
+                                        if (Text.get(new_counter).compareToIgnoreCase(Question.get(question_counter)) == 0) { //РµСЃР»Рё РЅР°С€Р»РѕСЃСЊ СЃР»РѕРІРѕ РІРѕРїСЂРѕСЃР°, С‚Рѕ СЏС‡РµР№РєРµ РїСЂРёРїР»СЋСЃРѕРІС‹РІР°РµС‚СЃСЏ СЂР°СЃСЃС‚РѕСЏРЅРёРµ РјРµР¶РґСѓ СЃР»РѕРІРѕРј РІРѕРїСЂРѕСЃР° Рё РѕС‚РІРµС‚Р°
+                                            //System.out.println("РЇ РЅР°С€С‘Р» СЃР»РѕРІРѕ РѕС‚РІРµС‚Р°: " + Question.get(question_counter) + " РІ " + sample_counter + "Рј С‚РµРєСЃС‚Рµ, СЂСЏРґРѕРј СЃРѕ РІР°СЂРёР°РЅС‚РѕРј РѕС‚РІРµС‚Р°" + Answer + "РЅР° СЂР°СЃСЃС‚РѕСЏРЅРёРё " + 1.0 / (Math.abs(word - new_counter)));
                                             Samples[(OUTPUT_NEURONS*QUESTION)*sample_counter + OUTPUT_NEURONS*answer_counter + ans][input_index] += (double)(1.0 / (Math.abs(word - new_counter)));
                                         }
                                     }
@@ -465,14 +353,14 @@ static int[][] TARGET = {{0, 1, 0, 0},
                                 new_counter--;
                             }
 
-                            //теперь надо найти слова вопроса справа от слова ответа в пределах четырёх предложений
-                            new_counter = word + 1; //счётчик указывает на следующее слово после слова ответа
-                            input_index = 4;      //индекс снова указывает на ячейку входа, отвечающую за предложение в котором было найдено слово ответа.
+                            //С‚РµРїРµСЂСЊ РЅР°РґРѕ РЅР°Р№С‚Рё СЃР»РѕРІР° РІРѕРїСЂРѕСЃР° СЃРїСЂР°РІР° РѕС‚ СЃР»РѕРІР° РѕС‚РІРµС‚Р° РІ РїСЂРµРґРµР»Р°С… С‡РµС‚С‹СЂС‘С… РїСЂРµРґР»РѕР¶РµРЅРёР№
+                            new_counter = word + 1;//СЃС‡С‘С‚С‡РёРє СѓРєР°Р·С‹РІР°РµС‚ РЅР° СЃР»РµРґСѓСЋС‰РµРµ СЃР»РѕРІРѕ РїРѕСЃР»Рµ СЃР»РѕРІР° РѕС‚РІРµС‚Р°
+                            input_index = 4;      //РёРЅРґРµРєСЃ СЃРЅРѕРІР° СѓРєР°Р·С‹РІР°РµС‚ РЅР° СЏС‡РµР№РєСѓ РІС…РѕРґР°, РѕС‚РІРµС‡Р°СЋС‰СѓСЋ Р·Р° РїСЂРµРґР»РѕР¶РµРЅРёРµ РІ РєРѕС‚РѕСЂРѕРј Р±С‹Р»Рѕ РЅР°Р№РґРµРЅРѕ СЃР»РѕРІРѕ РѕС‚РІРµС‚Р°.
 
                             while (input_index < 9 && new_counter < Text.size()) {
 
                                 if (input_index == 4 && (Text.get(new_counter).compareToIgnoreCase(Bad_words[0]) == 0 || Text.get(new_counter).compareToIgnoreCase(Bad_words[1]) == 0)) {
-                                    Samples[(OUTPUT_NEURONS*QUESTION)*sample_counter + OUTPUT_NEURONS*answer_counter + ans][INPUT_NEURONS - 1] += (double)(1.0 / (Math.abs(word - new_counter)));     //Если в предложении, где нашлось слово ответа есть плохие слова, то они учитываются.
+                                    Samples[(OUTPUT_NEURONS*QUESTION)*sample_counter + OUTPUT_NEURONS*answer_counter + ans][INPUT_NEURONS - 1] += (double)(1.0 / (Math.abs(word - new_counter)));     //Р•СЃР»Рё РІ РїСЂРµРґР»РѕР¶РµРЅРёРё, РіРґРµ РЅР°С€Р»РѕСЃСЊ СЃР»РѕРІРѕ РѕС‚РІРµС‚Р° РµСЃС‚СЊ РїР»РѕС…РёРµ СЃР»РѕРІР°, С‚Рѕ РѕРЅРё СѓС‡РёС‚С‹РІР°СЋС‚СЃСЏ.
                                 }
 
                                 if (Text.get(new_counter).equals(".")) {
@@ -480,7 +368,7 @@ static int[][] TARGET = {{0, 1, 0, 0},
                                 } else {
                                     for (int question_counter = 0; question_counter < Question.size(); question_counter++) {
                                         if (Text.get(new_counter).compareToIgnoreCase(Question.get(question_counter)) == 0) {
-                                            //System.out.println("Я нашёл слово ответа: " + Question.get(question_counter) + " в " + sample_counter + "м тексте, рядом со вариантом ответа" + Answer + "на расстоянии " + 1.0 / (Math.abs(word - new_counter)));
+                                            //System.out.println("РЇ РЅР°С€С‘Р» СЃР»РѕРІРѕ РѕС‚РІРµС‚Р°: " + Question.get(question_counter) + " РІ " + sample_counter + "Рј С‚РµРєСЃС‚Рµ, СЂСЏРґРѕРј СЃРѕ РІР°СЂРёР°РЅС‚РѕРј РѕС‚РІРµС‚Р°" + Answer + "РЅР° СЂР°СЃСЃС‚РѕСЏРЅРёРё " + 1.0 / (Math.abs(word - new_counter)));
                                             Samples[(OUTPUT_NEURONS*QUESTION)*sample_counter + OUTPUT_NEURONS*answer_counter + ans][input_index] += (double)(1.0 / (Math.abs(word - new_counter)));
                                         }
                                     }
@@ -497,7 +385,7 @@ static int[][] TARGET = {{0, 1, 0, 0},
             }
         }
 
-        //Теперь заполнены все обучающие наборы. Заполнение той части массива Samples, которая отвечает за target:
+       //РўРµРїРµСЂСЊ Р·Р°РїРѕР»РЅРµРЅС‹ РІСЃРµ РѕР±СѓС‡Р°СЋС‰РёРµ РЅР°Р±РѕСЂС‹. Р—Р°РїРѕР»РЅРµРЅРёРµ С‚РѕР№ С‡Р°СЃС‚Рё РјР°СЃСЃРёРІР° Samples, РєРѕС‚РѕСЂР°СЏ РѕС‚РІРµС‡Р°РµС‚ Р·Р° target:
 
         for(int i = 0; i < TEXTS; i++){
             for(int j = 0; j < QUESTION; j++){
@@ -514,19 +402,19 @@ static int[][] TARGET = {{0, 1, 0, 0},
     }
 
 
-/*           ~~~~ПРОХОЖДЕНИЕ НЕЙРОСЕТИ~~~~              */
+/*           ~~~~РџР РћРҐРћР–Р”Р•РќРР• РќР•Р™Р РћРЎР•РўР~~~~              */
     public static int ITER;
     public static void FeedForward(){
         int inp, hid, out;
         double sum;
 
-        //вычисление входов в скрытые слои
+        //РІС‹С‡РёСЃР»РµРЅРёРµ РІС…РѕРґРѕРІ РІ СЃРєСЂС‹С‚С‹Рµ СЃР»РѕРё
         for(hid = 0; hid < HIDDEN_NEURONS_1; hid++){
             sum = 0.0;
             for(inp =0; inp <INPUT_NEURONS; inp++){
                 sum +=inputs[inp] * wih_1[inp][hid];
             }
-            //добавляем смещение
+            //РґРѕР±Р°РІР»СЏРµРј СЃРјРµС‰РµРЅРёРµ
             sum += wih_1[INPUT_NEURONS][hid];
 
             hidden_1[hid] = sigmoid(sum);
@@ -539,14 +427,14 @@ static int[][] TARGET = {{0, 1, 0, 0},
             }
         }
 
-        //вход в выходной слой
+        //РІС…РѕРґ РІ РІС‹С…РѕРґРЅРѕР№ СЃР»РѕР№
         for(out = 0; out < 1; out++) {
             sum = 0.0;
             for (hid = 0; hid < HIDDEN_NEURONS_2; hid++) {
                 sum += hidden_2[hid] * who[hid][out];
             }
 
-            //добавляем смещение
+            //РґРѕР±Р°РІР»СЏРµРј СЃРјРµС‰РµРЅРёРµ
             sum += who[HIDDEN_NEURONS_2][out];
 
             actual[ITER] = sigmoid(sum);
@@ -555,16 +443,16 @@ static int[][] TARGET = {{0, 1, 0, 0},
     }
 
 
-/*           ~~~~ОБРАТНОЕ РАСПРОСТРАНЕНИЕ~~~~             */
+/*           ~~~~РћР‘Р РђРўРќРћР• Р РђРЎРџР РћРЎРўР РђРќР•РќРР•~~~~             */
     public static void BackPropogate(){
         int inp, hid, out;
 
-        //вычисление ошибки выходного слоя
+        //РІС‹С‡РёСЃР»РµРЅРёРµ РѕС€РёР±РєРё РІС‹С…РѕРґРЅРѕРіРѕ СЃР»РѕСЏ
         for (out = 0; out < OUTPUT_NEURONS; out++) {
             erro[out] = (target[out] - actual[out]) * sigmoidDerivative(actual[out]);
         }
 
-        //вычисление ошибки второго скрытого слоя
+        //РІС‹С‡РёСЃР»РµРЅРёРµ РѕС€РёР±РєРё РІС‚РѕСЂРѕРіРѕ СЃРєСЂС‹С‚РѕРіРѕ СЃР»РѕСЏ
         for (hid = 0; hid < HIDDEN_NEURONS_2; hid++) {
             errh_2[hid] = 0.0;
             for (out = 0; out < OUTPUT_NEURONS; out++) {
@@ -574,7 +462,7 @@ static int[][] TARGET = {{0, 1, 0, 0},
             errh_2[hid] *= sigmoidDerivative(hidden_1[hid]);
         }
 
-        //вычисление ошибки первого скрытого слоя
+        //РІС‹С‡РёСЃР»РµРЅРёРµ РѕС€РёР±РєРё РїРµСЂРІРѕРіРѕ СЃРєСЂС‹С‚РѕРіРѕ СЃР»РѕСЏ
         for (hid = 0; hid < HIDDEN_NEURONS_1; hid++) {
             errh_1[hid] = 0.0;
             for (out = 0; out < HIDDEN_NEURONS_2; out++) {
@@ -584,33 +472,33 @@ static int[][] TARGET = {{0, 1, 0, 0},
             errh_1[hid] *= sigmoidDerivative(hidden_1[hid]);
         }
 
-        //обновление весов выходного слоя
+        //РѕР±РЅРѕРІР»РµРЅРёРµ РІРµСЃРѕРІ РІС‹С…РѕРґРЅРѕРіРѕ СЃР»РѕСЏ
         for (out = 0; out < OUTPUT_NEURONS; out++) {
             for (hid = 0; hid < HIDDEN_NEURONS_2; hid++) {
                 who[hid][out] += (LEARN_RATE * erro[out] * hidden_2[hid]);
             }
 
-            //обновление смещения
+            //РѕР±РЅРѕРІР»РµРЅРёРµ СЃРјРµС‰РµРЅРёСЏ
             who[HIDDEN_NEURONS_2][out] += (LEARN_RATE * erro[out]);
         }
 
-        //обновление весов второго скрытого слоя
+        //РѕР±РЅРѕРІР»РµРЅРёРµ РІРµСЃРѕРІ РІС‚РѕСЂРѕРіРѕ СЃРєСЂС‹С‚РѕРіРѕ СЃР»РѕСЏ
         for (hid = 0; hid < HIDDEN_NEURONS_2; hid++) {
             for (inp = 0; inp < INPUT_NEURONS; inp++) {
                 wih_2[inp][hid] += (LEARN_RATE * errh_2[hid] * inputs[inp]);
             }
 
-            //обновление смещения
+            //РѕР±РЅРѕРІР»РµРЅРёРµ СЃРјРµС‰РµРЅРёСЏ
             wih_2[INPUT_NEURONS][hid] += (LEARN_RATE * errh_2[hid]);
         }
 
-        //обновление весов первого скрытого слоя
+        //РѕР±РЅРѕРІР»РµРЅРёРµ РІРµСЃРѕРІ РїРµСЂРІРѕРіРѕ СЃРєСЂС‹С‚РѕРіРѕ СЃР»РѕСЏ
         for (hid = 0; hid < HIDDEN_NEURONS_1; hid++) {
             for (inp = 0; inp < INPUT_NEURONS; inp++) {
                 wih_1[inp][hid] += (LEARN_RATE * errh_1[hid] * inputs[inp]);
             }
 
-            //обновление смещения
+            //РѕР±РЅРѕРІР»РµРЅРёРµ СЃРјРµС‰РµРЅРёСЏ
             wih_1[INPUT_NEURONS][hid] += (LEARN_RATE * errh_1[hid]);
         }
     }
@@ -679,7 +567,7 @@ static int[][] TARGET = {{0, 1, 0, 0},
 
         Scanner sc = new Scanner(System.in);
         Samples = AssignSamples(Samples);
-        System.out.println("Я создал семпл");
+        System.out.println("РЇ СЃРѕР·РґР°Р» СЃРµРјРїР»");
         double err;
         int i, iterations = 0;
         int sum = 0;
@@ -687,7 +575,7 @@ static int[][] TARGET = {{0, 1, 0, 0},
 
         try {
             DataOut = new
-                    DataOutputStream(new FileOutputStream("C:\\Users\\Даниил\\IdeaProjects\\Answer_Question\\src\\Errors.txt"));
+                    DataOutputStream(new FileOutputStream("C:\Users\IdeaProjects\Answer_Question\src\Errors.txt"));
         }catch(IOException exc){
             System.out.println("Cannot open output file");
             return;
@@ -749,11 +637,11 @@ static int[][] TARGET = {{0, 1, 0, 0},
             //return;
         }
 
-        /* Проверить сеть */
+        /* РџСЂРѕРІРµСЂРёС‚СЊ СЃРµС‚СЊ */
 
         try {
             DataOut = new
-                    DataOutputStream(new FileOutputStream("C:\\Users\\Даниил\\IdeaProjects\\Answer_Question\\src\\Weights.txt"));
+                    DataOutputStream(new FileOutputStream("C:\Users\IdeaProjects\Answer_Question\src\Weights.txt"));
         }catch(IOException exc){
             System.out.println("Cannot open output file");
             //return;
@@ -783,7 +671,6 @@ static int[][] TARGET = {{0, 1, 0, 0},
                         DataOut.writeDouble(inputs[3]);
                         DataOut.writeBytes(ANSWERS.get(action(actual)));
                         DataOut.writeBytes(ANSWERS.get(action(target)));
-                        //System.out.println("Я ошибся в ответе на " + check + "ый вопрос");
                         for (int o = 0; o < 4; o++) {
                             System.out.println(target[o] + " " + actual[o]);
                         }
@@ -826,21 +713,5 @@ static int[][] TARGET = {{0, 1, 0, 0},
                 }
             }
         }
-        /*
-        System.out.println("Весы входного слоя");
-        for (int ie = 0; ie<INPUT_NEURONS+1; ie++){
-            for(int j = 0; j<HIDDEN_NEURONS; j++){
-                System.out.print(wih[ie][j] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println("Весы выходного слоя");
-        for (int ie = 0; ie<HIDDEN_NEURONS; ie++){
-            for(int j = 0; j<1; j++){
-                System.out.print(wih[ie][j] + " ");
-            }
-            System.out.println();
-        }
-*/
     }
 }
